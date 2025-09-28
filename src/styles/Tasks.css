@@ -1,0 +1,29 @@
+.taskContainer{
+    color: hsl(0, 0%, 90%);
+    font-size: 1.6rem;
+    background-color: hsl(0, 0%, 20%);
+    padding: 25px 20px 20px 20px;
+    border-radius: 5px;
+    text-wrap: wrap;
+    border: 1px solid hsl(0, 0%, 15%);
+}
+.title{
+    color: white;
+    display: flex;
+    font-size: 1.8rem;
+    font-weight: 700;
+    /* text-decoration: underline; */
+    /* text-decoration-style:solid;
+    text-underline-offset: 8px; */
+    margin-bottom: 10px;
+}
+.deleteBtn{
+    color: red;
+    margin-left: auto;
+    /* background-color: red; */
+    background-color: hsl(0, 0%, 20%);
+    /* padding: 1px; */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
