@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:5001";
+const API_BASE_URL = "http://192.168.29.131:5001";
 
 export const getTasks = async () => {
     const response = await fetch(`${API_BASE_URL}/tasks`, {
@@ -48,6 +48,21 @@ export const updateTask = async (id, title, description) => {
 
     if (!response.ok) {
         throw new Error(data.message || "Failed to update task");
+    }
+
+    return data;
+};
+
+export const deleteTask = async (id) => {
+    const response = await fetch(`${API_BASE_URL}/tasks/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.message || "Failed to delete task");
     }
 
     return data;

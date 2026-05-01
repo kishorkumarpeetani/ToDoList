@@ -1,7 +1,13 @@
 import "../styles/TasksContainer.css";
 import { Tasks } from "./Tasks.jsx";
 
-export function TasksContainer({ tasks, setTasks, tasksLoading, onEditTask }) {
+export function TasksContainer({
+  tasks,
+  setTasks,
+  tasksLoading,
+  onEditTask,
+  showNotification,
+}) {
   return (
     <div className="tasksContainer" id="tasksContainer">
       {tasksLoading ? (
@@ -11,7 +17,12 @@ export function TasksContainer({ tasks, setTasks, tasksLoading, onEditTask }) {
           No Tasks Yet..
         </div>
       ) : (
-        <Tasks tasks={tasks} setTasks={setTasks} onEditTask={onEditTask} />
+        <Tasks
+          tasks={tasks}
+          setTasks={setTasks}
+          onEditTask={onEditTask}
+          showNotification={showNotification}
+        />
       )}
     </div>
   );

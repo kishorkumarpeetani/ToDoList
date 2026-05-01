@@ -1,11 +1,23 @@
 import "../styles/Tasks.css";
+import { deleteTask as deleteTaskApi } from "../api/task.api.js";
 
-export function Tasks({ tasks, setTasks, onEditTask }) {
-  function deleteTask(id) {
-    const updatedTasks = tasks.filter(
-      (task) => task.id !== id && task._id !== id
-    );
-    setTasks(updatedTasks);
+export function Tasks({ tasks, setTasks, onEditTask, showNotification }) {
+  async function deleteTask(id) {
+    try {
+      const data = await deleteTaskApi(id);
+      if (data.success) {
+        const updatedTasks = tasks.filter(
+          (task) => task.id !== id && task._id !== id
+        );
+        setTasks(updatedTasks);
+        showNotification("Task deleted successfully", "success");
+      } else {
+        showNotification(data.message || "Failed to delete task", "error");
+      }
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      showNotification(error.message || "Failed to delete task", "error");
+    }
   }
   return (
     <>

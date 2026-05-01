@@ -147,6 +147,7 @@ function App() {
             setTasks={setTasks}
             tasksLoading={tasksLoading}
             onEditTask={handleEditTask}
+            showNotification={showNotification}
           />
         </>
       )}

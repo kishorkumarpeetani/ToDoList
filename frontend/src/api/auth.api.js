@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:5001";
+const API_BASE_URL = "http://192.168.29.131:5001";
 
 export const signIn = async (email, password) => {
     const response = await fetch(`${API_BASE_URL}/auth/sign-in`, {
