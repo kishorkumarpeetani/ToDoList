@@ -13,6 +13,7 @@ export function NewTaskContainer({
 }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (editingTask) {
@@ -33,6 +34,8 @@ export function NewTaskContainer({
   }
 
   function closeForm() {
+    if (isSubmitting) return;
+
     setnewTaskContainer(false);
     setEditingTask(null);
   }
@@ -40,55 +43,83 @@ export function NewTaskContainer({
   async function addNewTask(event) {
     event.preventDefault();
 
-    if (editingTask) {
-      const taskId = editingTask.id || editingTask._id;
-      const updatedTasks = tasks.map((task) =>
-        task.id === taskId || task._id === taskId
-          ? { ...task, title, description }
-          : task
-      );
+    // prevent double click submission
+    if (isSubmitting) return;
 
-      if (editingTask._id) {
-        try {
-          await updateTask(taskId, title, description);
-          // Re-fetch tasks to get proper sorting with updated task at top
-          fetchTasks();
-          showNotification("Task updated successfully", "success");
-        } catch (error) {
-          console.error("Failed to update task", error);
-          setTasks(updatedTasks);
-          showNotification(error.message || "Failed to update task", "error");
-        }
-      } else {
-        setTasks(updatedTasks);
-      }
-
-      setEditingTask(null);
-      setnewTaskContainer(false);
-      return;
-    }
+    setIsSubmitting(true);
 
     try {
+      // -------------------------
+      // EDIT TASK
+      // -------------------------
+      if (editingTask) {
+        const taskId = editingTask.id || editingTask._id;
+
+        const updatedTasks = tasks.map((task) =>
+          task.id === taskId || task._id === taskId
+            ? { ...task, title, description }
+            : task
+        );
+
+        if (editingTask._id) {
+          await updateTask(taskId, title, description);
+
+          // fetch again for correct updatedAt sorting
+          fetchTasks();
+
+          showNotification("Task updated successfully", "success");
+        } else {
+          setTasks(updatedTasks);
+        }
+
+        setEditingTask(null);
+        setnewTaskContainer(false);
+        return;
+      }
+
+      // -------------------------
+      // CREATE TASK
+      // -------------------------
       await createTask(title, description);
+
       setTitle("");
       setDescription("");
       setnewTaskContainer(false);
+
       fetchTasks();
+
       showNotification("Task created successfully", "success");
+
     } catch (error) {
       console.error(error);
-      showNotification(error.message || "Something went wrong", "error");
+
+      showNotification(
+        error.message || "Something went wrong",
+        "error"
+      );
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
   return (
     <>
       <div className="newTask">
-        <form className="newTaskContainer" onSubmit={addNewTask}>
+        <form
+          className="newTaskContainer"
+          onSubmit={addNewTask}
+        >
           <div className="header">
-            <p>{editingTask ? "Edit Task" : "New Task"}</p>
+            <p>
+              {editingTask ? "Edit Task" : "New Task"}
+            </p>
 
-            <button type="button" className="closeBtn" onClick={closeForm}>
+            <button
+              type="button"
+              className="closeBtn"
+              onClick={closeForm}
+              disabled={isSubmitting}
+            >
               ✕
             </button>
           </div>
@@ -99,6 +130,7 @@ export function NewTaskContainer({
             onChange={saveTitle}
             value={title}
             required
+            disabled={isSubmitting}
           />
 
           <textarea
@@ -107,15 +139,27 @@ export function NewTaskContainer({
             onChange={saveDescription}
             value={description}
             required
+            disabled={isSubmitting}
           />
 
-          <button type="submit" className="addTaskBtn">
-            {editingTask ? "Save Changes" : "Add Task"}
+          <button
+            type="submit"
+            className="addTaskBtn"
+            disabled={isSubmitting}
+          >
+            {isSubmitting
+              ? "Saving..."
+              : editingTask
+              ? "Save Changes"
+              : "Add Task"}
           </button>
         </form>
       </div>
 
-      <div className="closer" onClick={closeForm} />
+      <div
+        className="closer"
+        onClick={closeForm}
+      />
     </>
   );
 }

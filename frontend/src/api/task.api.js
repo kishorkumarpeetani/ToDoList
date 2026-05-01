@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://192.168.29.131:5001";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const getTasks = async () => {
     const response = await fetch(`${API_BASE_URL}/tasks`, {
