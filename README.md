@@ -2,7 +2,7 @@
 
 A full-stack ToDo List application built using the MERN stack with secure authentication using HTTP-only cookies, task management features, and a clean responsive frontend.
 
----
+----
 
 ## 🚀 Features
 
